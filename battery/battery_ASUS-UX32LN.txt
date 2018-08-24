@@ -3,16 +3,18 @@
 ## FIXME: This doesn't work 100% yet (battery stuck at 0%),
 ##        so we're obviously still missing something..
 
-## FIXME: If this is applied more than once, it adds an extra newline every time..
+## FIXME: If these utility methods are applied more than once, they adds an extra newline every time..
 ##        Can we somehow check if it doesn't already exist, then add it?
+
 # Add a utility method for the patches that follow
 into method label B1B2 remove_entry;
 into definitionblock code_regex . insert
 begin
-Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
 end;
 
 # Another utility method
+into method label RDBB remove_entry;
 into device label EC0 insert
 begin
 Method (RDBB, 0, Serialized)\n
@@ -55,6 +57,7 @@ Method (RDBB, 0, Serialized)\n
 end;
 
 # Another utility method
+into method label WRBB remove_entry;
 into device label EC0 insert
 begin
 Method (WRBB, 1, Serialized)\n
