@@ -1,6 +1,6 @@
 # Battery Patch for ASUS UX32LN
 
-# TODO: Move this to EC0 instead?
+## TODO: Move this to EC0 instead?
 # Add a utility method for the patches that follow
 into method label B1B2 remove_entry;
 into definitionblock code_regex . insert
@@ -34,4 +34,4 @@ Else\n
 }
 end;
 
-# TODO: Add a _BIX patch
+## TODO: Add a _BIX patch
