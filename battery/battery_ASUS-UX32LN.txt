@@ -1,6 +1,10 @@
 # Battery Patch for ASUS UX32LN
 
-## FIXME: If this is applied more than once, it adds an extra newline every time
+## FIXME: This doesn't work 100% yet (battery stuck at 0%),
+##        so we're obviously still missing something..
+
+## FIXME: If this is applied more than once, it adds an extra newline every time..
+##        Can we somehow check if it doesn't already exist, then add it?
 # Add a utility method for the patches that follow
 into method label B1B2 remove_entry;
 into definitionblock code_regex . insert
@@ -8,19 +12,124 @@ begin
 Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }
 end;
 
-# Rename devices (part 1)
+# Another utility method
+into device label EC0 insert
+begin
+Method (RDBB, 0, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x20) { })\n
+    Store (BB00, Index(TEMP, 0x00))\n
+    Store (BB01, Index(TEMP, 0x01))\n
+    Store (BB02, Index(TEMP, 0x02))\n
+    Store (BB03, Index(TEMP, 0x03))\n
+    Store (BB04, Index(TEMP, 0x04))\n
+    Store (BB05, Index(TEMP, 0x05))\n
+    Store (BB06, Index(TEMP, 0x06))\n
+    Store (BB07, Index(TEMP, 0x07))\n
+    Store (BB08, Index(TEMP, 0x08))\n
+    Store (BB09, Index(TEMP, 0x09))\n
+    Store (BB0A, Index(TEMP, 0x0A))\n
+    Store (BB0B, Index(TEMP, 0x0B))\n
+    Store (BB0C, Index(TEMP, 0x0C))\n
+    Store (BB0D, Index(TEMP, 0x0D))\n
+    Store (BB0E, Index(TEMP, 0x0E))\n
+    Store (BB0F, Index(TEMP, 0x0F))\n
+    Store (BB10, Index(TEMP, 0x10))\n
+    Store (BB11, Index(TEMP, 0x11))\n
+    Store (BB12, Index(TEMP, 0x12))\n
+    Store (BB13, Index(TEMP, 0x13))\n
+    Store (BB14, Index(TEMP, 0x14))\n
+    Store (BB15, Index(TEMP, 0x15))\n
+    Store (BB16, Index(TEMP, 0x16))\n
+    Store (BB17, Index(TEMP, 0x17))\n
+    Store (BB18, Index(TEMP, 0x18))\n
+    Store (BB19, Index(TEMP, 0x19))\n
+    Store (BB1A, Index(TEMP, 0x1A))\n
+    Store (BB1B, Index(TEMP, 0x1B))\n
+    Store (BB1C, Index(TEMP, 0x1C))\n
+    Store (BB1D, Index(TEMP, 0x1D))\n
+    Store (BB1E, Index(TEMP, 0x1E))\n
+    Store (BB1F, Index(TEMP, 0x1F))\n
+    Return (TEMP)\n
+}\n
+end;
+
+# Another utility method
+into device label EC0 insert
+begin
+Method (WRBB, 1, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x20) { })\n
+    Store (Arg0, TEMP)\n
+    Store (DerefOf(Index(TEMP, 0x00)), BB00)\n
+    Store (DerefOf(Index(TEMP, 0x01)), BB01)\n
+    Store (DerefOf(Index(TEMP, 0x02)), BB02)\n
+    Store (DerefOf(Index(TEMP, 0x03)), BB03)\n
+    Store (DerefOf(Index(TEMP, 0x04)), BB04)\n
+    Store (DerefOf(Index(TEMP, 0x05)), BB05)\n
+    Store (DerefOf(Index(TEMP, 0x06)), BB06)\n
+    Store (DerefOf(Index(TEMP, 0x07)), BB07)\n
+    Store (DerefOf(Index(TEMP, 0x08)), BB08)\n
+    Store (DerefOf(Index(TEMP, 0x09)), BB09)\n
+    Store (DerefOf(Index(TEMP, 0x0A)), BB0A)\n
+    Store (DerefOf(Index(TEMP, 0x0B)), BB0B)\n
+    Store (DerefOf(Index(TEMP, 0x0C)), BB0C)\n
+    Store (DerefOf(Index(TEMP, 0x0D)), BB0D)\n
+    Store (DerefOf(Index(TEMP, 0x0E)), BB0E)\n
+    Store (DerefOf(Index(TEMP, 0x0F)), BB0F)\n
+    Store (DerefOf(Index(TEMP, 0x10)), BB10)\n
+    Store (DerefOf(Index(TEMP, 0x11)), BB11)\n
+    Store (DerefOf(Index(TEMP, 0x12)), BB12)\n
+    Store (DerefOf(Index(TEMP, 0x13)), BB13)\n
+    Store (DerefOf(Index(TEMP, 0x14)), BB14)\n
+    Store (DerefOf(Index(TEMP, 0x15)), BB15)\n
+    Store (DerefOf(Index(TEMP, 0x16)), BB16)\n
+    Store (DerefOf(Index(TEMP, 0x17)), BB17)\n
+    Store (DerefOf(Index(TEMP, 0x18)), BB18)\n
+    Store (DerefOf(Index(TEMP, 0x19)), BB19)\n
+    Store (DerefOf(Index(TEMP, 0x1A)), BB1A)\n
+    Store (DerefOf(Index(TEMP, 0x1B)), BB1B)\n
+    Store (DerefOf(Index(TEMP, 0x1C)), BB1C)\n
+    Store (DerefOf(Index(TEMP, 0x1D)), BB1D)\n
+    Store (DerefOf(Index(TEMP, 0x1E)), BB1E)\n
+    Store (DerefOf(Index(TEMP, 0x1F)), BB1F)\n
+}\n
+end;
+
+# Let the monolithic battery patching begin!
 into device label EC0 code_regex TAH0,\s+16, replace_matched begin AH00,8,AH01,8, end;
 into device label EC0 code_regex TAH1,\s+16, replace_matched begin AH10,8,AH11,8, end;
 into device label EC0 code_regex B0C3,\s+16, replace_matched begin C300,8,C301,8, end;
 into device label EC0 code_regex B0SN,\s+16, replace_matched begin SN00,8,SN01,8, end;
 into device label EC0 code_regex B1SN,\s+16 replace_matched begin SN10,8,SN11,8, end;
-
-# Rename devices (part 2)
+into device label EC0 code_regex DT2B,\s+16 replace_matched begin T2B0,8,T2B1,8 end;
 into method label TACH code_regex \(TAH0, replaceall_matched begin (B1B2(AH00,AH01), end;
 into method label TACH code_regex \(TAH1, replaceall_matched begin (B1B2(AH10,AH11), end;
 into method label _BIX code_regex \(\^\^LPCB.EC0.B0C3, replaceall_matched begin (B1B2(^^LPCB.EC0.C300,^^LPCB.EC0.C301), end;
 into method label BIFA code_regex \(B0SN, replaceall_matched begin (B1B2(SN00,SN01), end;
 into method label BIFA code_regex \(B1SN, replaceall_matched begin (B1B2(SN10,SN11), end;
+into method label SMBR code_regex \(DT2B, replace_matched begin (B1B2(T2B0,T2B1), end;
+into method label SMBW code_regex Store\s+\(([^,]*),\s+DT2B\) replace_matched
+begin
+Store(%1,T2B0) Store(ShiftRight(%1,8),T2B1)
+end;
+into device label EC0 code_regex BDA2,\s+256 replace_matched 
+begin
+//BDA2, 256,\n
+BB00,8,BB01,8,BB02,8,BB03,8,\n
+BB04,8,BB05,8,BB06,8,BB07,8,\n
+BB08,8,BB09,8,BB0A,8,BB0B,8,\n
+BB0C,8,BB0D,8,BB0E,8,BB0F,8,\n
+BB10,8,BB11,8,BB12,8,BB13,8,\n
+BB14,8,BB15,8,BB16,8,BB17,8,\n
+BB18,8,BB19,8,BB1A,8,BB1B,8,\n
+BB1C,8,BB1D,8,BB1E,8,BB1F,8\n
+end;
+into method label SMBR code_regex \(BDA2, replaceall_matched begin (RDBB(), end;
+into method label SMBR code_regex Store\s\((.*),\sBDA2\) replaceall_matched begin WRBB(%1) end;
+into method label SMBW code_regex Store\s\((.*),\sBDA2\) replaceall_matched begin WRBB(%1) end;
+into method label ECSB code_regex Store\s\((.*),\sBDA2\) replaceall_matched begin WRBB(%1) end;
+into method label ECSB code_regex \(BDA2, replaceall_matched begin (RDBB(), end;
 
 # ASUS specific battery patch (fully charged battery is reported incorrectly)
 into method label FBST code_regex If\s\(CHGS\s\(Zero\)\)[\s]+\{[\s]+Store\s\(0x02,\sLocal0\)[\s]+\}[\s]+Else[\s]+\{[\s]+Store\s\(One,\sLocal0\)[\s]+\} replaceall_matched begin
@@ -33,5 +142,3 @@ Else\n
 		 Store (Zero, Local0)\n
 }
 end;
-
-## TODO: Add a _BIX patch
