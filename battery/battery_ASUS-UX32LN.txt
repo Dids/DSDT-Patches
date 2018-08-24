@@ -118,15 +118,14 @@ Store(%1,T2B0) Store(ShiftRight(%1,8),T2B1)
 end;
 into device label EC0 code_regex BDA2,\s+256 replace_matched 
 begin
-//BDA2, 256,\n
-BB00,8,BB01,8,BB02,8,BB03,8,\n
-BB04,8,BB05,8,BB06,8,BB07,8,\n
-BB08,8,BB09,8,BB0A,8,BB0B,8,\n
-BB0C,8,BB0D,8,BB0E,8,BB0F,8,\n
-BB10,8,BB11,8,BB12,8,BB13,8,\n
-BB14,8,BB15,8,BB16,8,BB17,8,\n
-BB18,8,BB19,8,BB1A,8,BB1B,8,\n
-BB1C,8,BB1D,8,BB1E,8,BB1F,8\n
+                BB00,8,BB01,8,BB02,8,BB03,8,\n
+                BB04,8,BB05,8,BB06,8,BB07,8,\n
+                BB08,8,BB09,8,BB0A,8,BB0B,8,\n
+                BB0C,8,BB0D,8,BB0E,8,BB0F,8,\n
+                BB10,8,BB11,8,BB12,8,BB13,8,\n
+                BB14,8,BB15,8,BB16,8,BB17,8,\n
+                BB18,8,BB19,8,BB1A,8,BB1B,8,\n
+                BB1C,8,BB1D,8,BB1E,8,BB1F,8
 end;
 into method label SMBR code_regex \(BDA2, replaceall_matched begin (RDBB(), end;
 into method label SMBR code_regex Store\s\((.*),\sBDA2\) replaceall_matched begin WRBB(%1) end;
