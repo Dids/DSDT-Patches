@@ -6,7 +6,6 @@
 into method label B1B2 remove_entry;
 into definitionblock code_regex . insert
 begin
-#Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
 Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }
 end;
 
