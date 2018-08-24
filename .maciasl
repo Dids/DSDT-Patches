@@ -1,3 +1,5 @@
-[battery] ASUS UX32LN										battery/battery_ASUS-UX32LN.txt
-[syntax] Fix PARSEOP_ZERO								syntax/fix_PARSEOP_ZERO.txt
-[syntax] Fix PARSEOP_ZERO (Aggressive)	syntax/fix_PARSEOP_ZERO_aggressive.txt
+[battery] Battery Detection (ASUS UX32LN)	battery/battery_ASUS-UX32LN.txt
+[syntax] Fix PARSEOP_ZERO									syntax/fix_PARSEOP_ZERO.txt
+[syntax] Fix PARSEOP_ZERO (Aggressive)		syntax/fix_PARSEOP_ZERO_aggressive.txt
+[usb] USB3 _PRW 0x0D (instant wake)				usb/usb_prw_0x0d_xhc.txt
+[usb] USB3 _PRW 0x6D (instant wake)				usb/usb_prw_0x6d_xhc.txt

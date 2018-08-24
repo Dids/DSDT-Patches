@@ -1,7 +1,6 @@
 # Battery Patch for ASUS UX32LN
 
 ## FIXME: If this is applied more than once, it adds an extra newline every time
-## TODO: Move this to EC0 instead?
 # Add a utility method for the patches that follow
 into method label B1B2 remove_entry;
 into definitionblock code_regex . insert
