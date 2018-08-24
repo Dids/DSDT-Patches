@@ -1,2 +1,2 @@
 [battery] ASUS UX32LN     battery/battery_ASUS-UX32LN.txt
-[system] ASUS UX32LN      system/system_ASUS-UX32LN_FixParseOPZero.txt
+[syntax] Fix PARSEOP_ZERO syntax/fix_PARSEOP_ZERO.txt
