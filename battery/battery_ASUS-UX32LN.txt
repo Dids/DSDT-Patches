@@ -1,0 +1,33 @@
+## TODO: Move this to EC0 instead?
+# Add a utility method for the patches that follow
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+# Rename devices (part 1)
+into device label EC0 code_regex TAH0,\s+16, replace_matched begin AH00,8,AH01,8, end;
+into device label EC0 code_regex TAH1,\s+16, replace_matched begin AH10,8,AH11,8, end;
+into device label EC0 code_regex B0C3,\s+16, replace_matched begin C300,8,C301,8, end;
+into device label EC0 code_regex B0SN,\s+16, replace_matched begin SN00,8,SN01,8, end;
+into device label EC0 code_regex B1SN,\s+16, replace_matched begin SN10,8,SN11,8, end;
+
+# Rename devices (part 2)
+into method label TACH code_regex \(TAH0, replaceall_matched begin (B1B2(AH00,AH01), end;
+into method label TACH code_regex \(TAH1, replaceall_matched begin (B1B2(AH10,AH11), end;
+into method label _BIX code_regex \(\^\^LPCB.EC0.B0C3, replaceall_matched begin (B1B2(^^LPCB.EC0.C300,^^LPCB.EC0.C301), end;
+into method label BIFA code_regex \(B0SN, replaceall_matched begin (B1B2(SN00,SN01), end;
+into method label BIFA code_regex \(B1SN, replaceall_matched begin (B1B2(SN10,SN11), end;
+
+# ASUS specific battery patch (fully charged battery is reported incorrectly)
+into method label FBST code_regex If\s\(CHGS\s\(Zero\)\)[\s]+\{[\s]+Store\s\(0x02,\sLocal0\)[\s]+\}[\s]+Else[\s]+\{[\s]+Store\s\(One,\sLocal0\)[\s]+\} replaceall_matched begin
+If (CHGS (Zero))\n
+{\n
+     Store (0x02, Local0)\n
+}\n
+Else\n
+{\n
+     Store (Zero, Local0)\n
+}
+end;
