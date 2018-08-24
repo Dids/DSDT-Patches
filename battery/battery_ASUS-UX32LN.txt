@@ -1,11 +1,13 @@
 # Battery Patch for ASUS UX32LN
 
+## FIXME: If this is applied more than once, it adds an extra newline every time
 ## TODO: Move this to EC0 instead?
 # Add a utility method for the patches that follow
 into method label B1B2 remove_entry;
 into definitionblock code_regex . insert
 begin
-Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+#Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }
 end;
 
 # Rename devices (part 1)
@@ -13,7 +15,7 @@ into device label EC0 code_regex TAH0,\s+16, replace_matched begin AH00,8,AH01,8
 into device label EC0 code_regex TAH1,\s+16, replace_matched begin AH10,8,AH11,8, end;
 into device label EC0 code_regex B0C3,\s+16, replace_matched begin C300,8,C301,8, end;
 into device label EC0 code_regex B0SN,\s+16, replace_matched begin SN00,8,SN01,8, end;
-into device label EC0 code_regex B1SN,\s+16, replace_matched begin SN10,8,SN11,8, end;
+into device label EC0 code_regex B1SN,\s+16 replace_matched begin SN10,8,SN11,8, end;
 
 # Rename devices (part 2)
 into method label TACH code_regex \(TAH0, replaceall_matched begin (B1B2(AH00,AH01), end;
@@ -26,11 +28,11 @@ into method label BIFA code_regex \(B1SN, replaceall_matched begin (B1B2(SN10,SN
 into method label FBST code_regex If\s\(CHGS\s\(Zero\)\)[\s]+\{[\s]+Store\s\(0x02,\sLocal0\)[\s]+\}[\s]+Else[\s]+\{[\s]+Store\s\(One,\sLocal0\)[\s]+\} replaceall_matched begin
 If (CHGS (Zero))\n
 {\n
-     Store (0x02, Local0)\n
+		 Store (0x02, Local0)\n
 }\n
 Else\n
 {\n
-     Store (Zero, Local0)\n
+		 Store (Zero, Local0)\n
 }
 end;
 
